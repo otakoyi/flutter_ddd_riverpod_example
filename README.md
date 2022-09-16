@@ -1,16 +1,11 @@
-# example
+# The Example
 
-A new Flutter project.
+This is an example how to implement clean architecture with domain driven design and riverpod in flutter projects. 
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Rename local.config.json.example into local.config.json
+2. Setup local supabase or remote supabase backend. 
+3. Flutter flavours included. Update your run configuration with --flavor development --target lib/main_development.dart
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ Tested this example on the web and mobile. 
