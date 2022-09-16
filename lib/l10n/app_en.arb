@@ -1,0 +1,17 @@
+{
+  "addOrganization": "Add Organization",
+  "cancel": "Cancel",
+  "create": "Create",
+  "departmentCreateBtn": "Create",
+  "departmentCreateFormFieldErrorText": "Name must be at lest 2 characters length",
+  "departmentCreateFormFieldHintText": "Department Name",
+  "departmentUpdateBtn": "Update",
+  "description": "Description",
+  "emailInvalid": "Invalid email",
+  "or": "or",
+  "organizationName": "Organization name",
+  "organizationNameNotEmpty": "Organization name must not be empty",
+  "signInWithGoogle": "Sign In With Google",
+  "somethingWentWrong": "Something went wrong",
+  "yourOrganizations": "Your organizations"
+}

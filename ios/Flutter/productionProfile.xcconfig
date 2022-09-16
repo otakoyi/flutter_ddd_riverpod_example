@@ -1,0 +1,5 @@
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET=lib/main_production.dart
+ASSET_PREFIX=production
+BUNDLE_NAME=Example Production

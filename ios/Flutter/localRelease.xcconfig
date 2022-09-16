@@ -1,0 +1,5 @@
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET=lib/main_local.dart
+ASSET_PREFIX=local
+BUNDLE_NAME=Example Local

@@ -1,0 +1,5 @@
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET=lib/main_development.dart
+ASSET_PREFIX=development
+BUNDLE_NAME=Example Development

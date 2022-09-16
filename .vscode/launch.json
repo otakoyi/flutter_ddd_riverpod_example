@@ -1,0 +1,122 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "local Debug",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": [
+        "--flavor",
+        "local",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_local.dart"
+    },
+    {
+      "name": "local Profile",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "args": [
+        "--flavor",
+        "local",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_local.dart"
+    },
+    {
+      "name": "local Release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": [
+        "--flavor",
+        "local",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_local.dart"
+    },
+    {
+      "name": "development Debug",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": [
+        "--flavor",
+        "development",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_development.dart"
+    },
+    {
+      "name": "development Profile",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "args": [
+        "--flavor",
+        "development",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_development.dart"
+    },
+    {
+      "name": "development Release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": [
+        "--flavor",
+        "development",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_development.dart"
+    },
+    {
+      "name": "production Debug",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": [
+        "--flavor",
+        "production",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_production.dart"
+    },
+    {
+      "name": "production Profile",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "args": [
+        "--flavor",
+        "production",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_production.dart"
+    },
+    {
+      "name": "production Release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": [
+        "--flavor",
+        "production",
+        "--web-port",
+        "8686",
+      ],
+      "program": "lib/main_production.dart"
+    }
+  ]
+}
