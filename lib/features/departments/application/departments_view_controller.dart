@@ -17,6 +17,9 @@ class DepartmentsViewController
   /// Get department by id
   Future<void> _get() async {
     final res = await _repository.getDepartmentById(_id);
-    state = res.fold((l) => AsyncValue.error(l.toString()), AsyncValue.data);
+    state = res.fold(
+      (l) => AsyncValue.error(l.error, l.stackTrace),
+      AsyncValue.data,
+    );
   }
 }

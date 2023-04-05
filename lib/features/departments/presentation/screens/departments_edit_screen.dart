@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DepartmentsEditScreen extends ConsumerWidget {
   /// Departments list constructor
   const DepartmentsEditScreen({
-    super.key,
     required this.id,
+    super.key,
   });
 
   /// Department id

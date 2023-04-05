@@ -13,8 +13,8 @@ import 'package:go_router/go_router.dart';
 class DepartmentsList extends ConsumerWidget {
   /// Departments list constructor
   const DepartmentsList({
-    super.key,
     required this.organization,
+    super.key,
   });
 
   ///

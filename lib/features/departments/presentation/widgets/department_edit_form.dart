@@ -10,8 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DepartmentEditForm extends ConsumerStatefulWidget {
   ///
   const DepartmentEditForm({
-    super.key,
     required this.id,
+    super.key,
   });
 
   ///
@@ -35,7 +35,7 @@ class _DepartmentEditFormState extends ConsumerState<DepartmentEditForm> {
 
   @override
   void initState() {
-    ref.listenOnce(departmentsEditControllerProvider(widget.id), (
+    ref.listenManual(departmentsEditControllerProvider(widget.id), (
       AsyncValue<DepartmentEntity>? prev,
       AsyncValue<DepartmentEntity> next,
     ) {

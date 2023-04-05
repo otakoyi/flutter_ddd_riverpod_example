@@ -7,6 +7,7 @@ import 'package:example/features/organization/domain/values/organization_name.da
 import 'package:example/features/organization/infrastructure/repositories/organization_entity_converter.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 ///
 class OrganizationRepository implements OrganizationRepositoryInterface {
@@ -25,16 +26,16 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   ///
   @override
   Future<Either<Failure, List<OrganizationEntity>>> getOrganizations() async {
-    final res = await client
-        .from(_tableOrganization)
-        .select('*,$_tableOrganizationUser!inner(*)')
-        .eq('$_tableOrganizationUser.user_id', user.id)
-        .withConverter(OrganizationEntityConverter.toList)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_tableOrganization)
+          .select<PostgrestList>('*,$_tableOrganizationUser!inner(*)')
+          .eq('$_tableOrganizationUser.user_id', user.id)
+          .withConverter(OrganizationEntityConverter.toList);
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(res.data!);
   }
 
   ///
@@ -42,16 +43,17 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   Future<Either<Failure, OrganizationEntity>> getOrganizationById(
     String id,
   ) async {
-    final res = await client
-        .from(_tableOrganization)
-        .select('*,$_tableOrganizationUser!inner(*)')
-        .eq('$_tableOrganizationUser.user_id', user.id)
-        .withConverter(OrganizationEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_tableOrganization)
+          .select<Map<String, dynamic>>('*,$_tableOrganizationUser!inner(*)')
+          .eq('$_tableOrganizationUser.user_id', user.id)
+          .single()
+          .withConverter(OrganizationEntity.fromJson);
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(res.data!);
   }
 
   ///
@@ -67,24 +69,21 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
       createdAt: now,
       updatedAt: now,
     );
-    final res = await client
-        .from(_tableOrganization)
-        .insert(
-          entity.toJson(),
-        )
-        .withConverter(OrganizationEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_tableOrganization)
+          .insert(entity.toJson())
+          .select<Map<String, dynamic>>()
+          .single()
+          .withConverter(OrganizationEntity.fromJson);
+      await client.from(_tableOrganizationUser).insert(
+        {'organization_id': res.id, 'user_id': user.id},
+      );
+
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    final organization = res.data!;
-    final res2 = await client.from(_tableOrganizationUser).insert(
-      {'organization_id': organization.id, 'user_id': user.id},
-    ).execute();
-    if (res2.hasError) {
-      return left(const Failure.badRequest());
-    }
-    return right(organization);
   }
 
   ///
@@ -99,17 +98,19 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
       name: name,
       updatedAt: now,
     );
-    final res = await client
-        .from(_tableOrganization)
-        .update(
-          entity.toJson(),
-        )
-        .withConverter(OrganizationEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_tableOrganization)
+          .update(
+            entity.toJson(),
+          )
+          .select<Map<String, dynamic>>()
+          .single()
+          .withConverter(OrganizationEntity.fromJson);
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(res.data!);
   }
 
   /// Delete organization
@@ -117,14 +118,14 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   Future<Either<Failure, bool>> deleteOrganization(
     OrganizationEntity organizationEntity,
   ) async {
-    final res = await client
-        .from(_tableOrganization)
-        .delete()
-        .eq('id', organizationEntity.id)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      await client
+          .from(_tableOrganization)
+          .delete()
+          .eq('id', organizationEntity.id);
+      return right(true);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(true);
   }
 }

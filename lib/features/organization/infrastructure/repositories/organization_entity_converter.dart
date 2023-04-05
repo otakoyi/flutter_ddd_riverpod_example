@@ -8,11 +8,4 @@ class OrganizationEntityConverter {
         .map((e) => OrganizationEntity.fromJson(e as Map<String, dynamic>))
         .toList();
   }
-
-  ///
-  static OrganizationEntity toSingle(dynamic data) {
-    return OrganizationEntity.fromJson(
-      (data as List).first as Map<String, dynamic>,
-    );
-  }
 }

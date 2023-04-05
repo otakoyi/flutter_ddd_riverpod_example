@@ -13,6 +13,9 @@ class DepartmentsDeleteController extends StateNotifier<AsyncValue<bool>> {
   /// Get department by id
   Future<void> handle() async {
     final res = await _repository.deleteDepartment(_id);
-    state = res.fold((l) => AsyncValue.error(l.toString()), AsyncValue.data);
+    state = res.fold(
+      (l) => AsyncValue.error(l.error, l.stackTrace),
+      AsyncValue.data,
+    );
   }
 }

@@ -23,7 +23,8 @@ Either<Failure, String> _validate(String? input) {
     return right(input);
   }
   return left(
-    const Failure.unprocessableEntity(
+    Failure.unprocessableEntity(
+      StackTrace.current,
       message: 'The company name must be at least 21 characters in length',
     ),
   );

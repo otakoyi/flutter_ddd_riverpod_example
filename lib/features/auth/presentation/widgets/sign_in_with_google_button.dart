@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:example/features/auth/auth_provider.dart';
+import 'package:example/features/auth/application/sign_in_with_google_controller.dart';
 import 'package:example/features/common/presentation/utils/extensions/ui_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +15,7 @@ class SignInWithGoogleButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: () {
         try {
-          ref.read(signInWithGoogleProvider.notifier).signInWithGoogle();
+          ref.read(signInWithGoogleProvider.future);
         } catch (e) {
           log(e.toString());
         }

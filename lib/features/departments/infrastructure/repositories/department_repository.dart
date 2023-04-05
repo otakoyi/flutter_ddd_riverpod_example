@@ -32,60 +32,61 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
       createdAt: now,
       organizationId: organization.id!,
     );
-    final res = await client
-        .from(_table)
-        .insert(
-          entity.toJson(),
-        )
-        .withConverter(DepartmentEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_table)
+          .insert(entity.toJson())
+          .select<Map<String, dynamic>>()
+          .single()
+          .withConverter(DepartmentEntity.fromJson);
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(res.data!);
   }
 
   @override
   Future<Either<Failure, bool>> deleteDepartment(String id) async {
-    final res = await client
-        .from(_table)
-        .delete()
-        .eq('$_table.organization_id', organization.id)
-        .eq('$_table.id', id)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      await client
+          .from(_table)
+          .delete()
+          .eq('$_table.organization_id', organization.id)
+          .eq('$_table.id', id);
+      return right(true);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(true);
   }
 
   @override
   Future<Either<Failure, DepartmentEntity>> getDepartmentById(String id) async {
-    final res = await client
-        .from(_table)
-        .select()
-        .eq('organization_id', organization.id)
-        .eq('id', id)
-        .withConverter(DepartmentEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_table)
+          .select<Map<String, dynamic>>()
+          .eq('organization_id', organization.id)
+          .eq('id', id)
+          .single()
+          .withConverter(DepartmentEntity.fromJson);
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(res.data!);
   }
 
   @override
   Future<Either<Failure, List<DepartmentEntity>>> getDepartments() async {
-    final res = await client
-        .from(_table)
-        .select()
-        .eq('organization_id', organization.id)
-        .withConverter(DepartmentEntityConverter.toList)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_table)
+          .select<supabase.PostgrestList>()
+          .eq('organization_id', organization.id)
+          .withConverter(DepartmentEntityConverter.toList);
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(res.data!);
   }
 
   @override
@@ -100,16 +101,18 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
       updatedAt: now,
       organizationId: organization.id!,
     );
-    final res = await client
-        .from(_table)
-        .update(entity.toJson())
-        .eq('organization_id', organization.id)
-        .eq('id', id)
-        .withConverter(DepartmentEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
-      return left(const Failure.badRequest());
+    try {
+      final res = await client
+          .from(_table)
+          .update(entity.toJson())
+          .eq('organization_id', organization.id)
+          .eq('id', id)
+          .select<Map<String, dynamic>>()
+          .single()
+          .withConverter(DepartmentEntity.fromJson);
+      return right(res);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(res.data!);
   }
 }

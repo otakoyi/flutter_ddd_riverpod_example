@@ -8,11 +8,4 @@ class DepartmentEntityConverter {
         .map((e) => DepartmentEntity.fromJson(e as Map<String, dynamic>))
         .toList();
   }
-
-  ///
-  static DepartmentEntity toSingle(dynamic data) {
-    return DepartmentEntity.fromJson(
-      (data as List).first as Map<String, dynamic>,
-    );
-  }
 }

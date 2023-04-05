@@ -23,7 +23,8 @@ Either<Failure, String> _validate(String input) {
     return right(input);
   }
   return left(
-    const Failure.unprocessableEntity(
+    Failure.unprocessableEntity(
+      StackTrace.current,
       message: 'The name must be at least 2 characters in length',
     ),
   );

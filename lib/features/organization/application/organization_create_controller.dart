@@ -1,30 +1,30 @@
 import 'package:example/features/common/domain/failures/failure.dart';
 import 'package:example/features/organization/domain/entities/organization_entity.dart';
 import 'package:example/features/organization/domain/values/organization_name.dart';
-import 'package:example/features/organization/infrastructure/repositories/organization_repository.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:example/features/organization/providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'organization_create_controller.g.dart';
 
 ///
-class OrganizationCreateController
-    extends StateNotifier<AsyncValue<OrganizationEntity?>> {
-  ///
-  OrganizationCreateController(OrganizationRepository? repository)
-      : super(const AsyncValue.data(null)) {
-    if (repository == null) {
-      state = const AsyncValue.error(Failure.unauthorized());
-      return;
-    }
-    _repository = repository;
+@riverpod
+class OrganizationCreateController extends _$OrganizationCreateController {
+  @override
+  FutureOr<OrganizationEntity?> build() {
+    return null;
   }
 
-  late final OrganizationRepository _repository;
-
-  /// Create organization
+  ///
   Future<void> create(OrganizationName name, String description) async {
     state = const AsyncValue.loading();
-    final res = await _repository.createOrganization(name);
+    final repository = ref.read(organizationRepositoryProvider);
+    if (repository == null) {
+      throw Failure.unauthorized(StackTrace.current);
+    }
+
+    final res = await repository.createOrganization(name);
     state = res.fold(
-      (l) => AsyncValue<OrganizationEntity?>.error(l.toString()),
+      (l) => AsyncValue<OrganizationEntity?>.error(l.error, l.stackTrace),
       AsyncValue<OrganizationEntity?>.data,
     );
   }

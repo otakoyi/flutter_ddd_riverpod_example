@@ -15,7 +15,7 @@ class AuthTokenLocalDataSource {
   Either<Failure, String> get() {
     final v = _prefs.getString(_key);
     if (v == null) {
-      return left(const Failure.empty());
+      return left(Failure.empty(StackTrace.current));
     }
 
     return right(v);

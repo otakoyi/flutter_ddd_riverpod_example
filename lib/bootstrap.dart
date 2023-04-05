@@ -2,10 +2,12 @@ import 'package:example/config/providers.dart' as providers;
 import 'package:example/flavors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 /// Initializes services and controllers before the start of the application
 Future<ProviderContainer> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
 
   final container = ProviderContainer(
     overrides: [], //supabaseProvider.overrideWithValue(Supabase.instance)

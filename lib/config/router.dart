@@ -87,7 +87,7 @@ final router = GoRouter(
   observers: [
     routeObserver,
   ],
-  redirect: (state) {
+  redirect: (context, state) {
     final loggedIn = authStateListenable.value;
     final goingToLogin = state.subloc.contains('/${AuthScreen.route}');
 

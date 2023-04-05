@@ -16,7 +16,10 @@ class DepartmentsListController
   ///
   Future<void> getDepartments() async {
     final res = await _repository.getDepartments();
-    state = res.fold((l) => AsyncValue.error(l.toString()), AsyncValue.data);
+    state = res.fold(
+      (l) => AsyncValue.error(l.error, l.stackTrace),
+      AsyncValue.data,
+    );
   }
 
   /// Add an entity to list

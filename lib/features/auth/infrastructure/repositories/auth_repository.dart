@@ -28,11 +28,11 @@ class AuthRepository implements AuthRepositoryInterface {
   void authStateChange(
     void Function(UserEntity? userEntity) callback,
   ) {
-    authClient.onAuthStateChange((event, session) {
-      switch (event) {
+    authClient.onAuthStateChange.listen((data) {
+      switch (data.event) {
         case supabase.AuthChangeEvent.signedIn:
           callback(
-            UserEntity.fromJson(session!.user!.toJson()),
+            UserEntity.fromJson(data.session!.user.toJson()),
           );
 
           break;
@@ -41,12 +41,13 @@ class AuthRepository implements AuthRepositoryInterface {
           break;
         case supabase.AuthChangeEvent.userUpdated:
           callback(
-            UserEntity.fromJson(session!.user!.toJson()),
+            UserEntity.fromJson(data.session!.user.toJson()),
           );
           break;
         case supabase.AuthChangeEvent.passwordRecovery:
         case supabase.AuthChangeEvent.tokenRefreshed:
-          break;
+        case supabase.AuthChangeEvent.userDeleted:
+        case supabase.AuthChangeEvent.mfaChallengeVerified:
       }
     });
   }
@@ -56,16 +57,16 @@ class AuthRepository implements AuthRepositoryInterface {
   Future<Either<Failure, UserEntity>> setSession(String token) async {
     final response = await authClient.setSession(token);
     await authTokenLocalDataSource
-        .store(response.data?.persistSessionString ?? '');
+        .store(response.session?.persistSessionString ?? '');
 
-    final data = response.data;
+    final data = response.session;
 
-    if (response.error != null || response.data == null) {
+    if (data == null) {
       await authTokenLocalDataSource.remove();
-      return left(const Failure.unauthorized());
+      return left(Failure.unauthorized(StackTrace.current));
     }
 
-    return right(UserEntity.fromJson(data!.user!.toJson()));
+    return right(UserEntity.fromJson(data.user.toJson()));
   }
 
   /// Recovers session from local storage and refreshes tokens
@@ -73,32 +74,32 @@ class AuthRepository implements AuthRepositoryInterface {
   Future<Either<Failure, UserEntity>> restoreSession() async {
     final res = authTokenLocalDataSource.get();
     if (res.isLeft()) {
-      return left(const Failure.empty());
+      return left(Failure.empty(StackTrace.current));
     }
 
     final response = await authClient.recoverSession(res.getOrElse((_) => ''));
-    final data = response.data;
+    final data = response.session;
 
-    if (response.error != null || response.data == null) {
+    if (response.session == null) {
       await authTokenLocalDataSource.remove();
-      return left(const Failure.unauthorized());
+      return left(Failure.unauthorized(StackTrace.current));
     }
 
     await authTokenLocalDataSource
-        .store(response.data?.persistSessionString ?? '');
+        .store(response.session?.persistSessionString ?? '');
 
-    return right(UserEntity.fromJson(data!.user!.toJson()));
+    return right(UserEntity.fromJson(data!.user.toJson()));
   }
 
   /// Signs in user to the application
   @override
   Future<Either<Failure, bool>> signInWithGoogle() async {
     log('here2');
-    final res = await authClient.signInWithProvider(
+    final res = await authClient.signInWithOAuth(
       supabase.Provider.google,
     );
     if (!res) {
-      return left(const Failure.badRequest());
+      return left(Failure.badRequest(StackTrace.current));
     }
     return right(true);
   }
@@ -107,11 +108,11 @@ class AuthRepository implements AuthRepositoryInterface {
   @override
   Future<Either<Failure, bool>> signOut() async {
     await authTokenLocalDataSource.remove();
-
-    final res = await authClient.signOut();
-    if (res.error != null) {
-      return left(const Failure.badRequest());
+    try {
+      await authClient.signOut();
+      return right(true);
+    } catch (e) {
+      return left(Failure.badRequest(StackTrace.current));
     }
-    return right(true);
   }
 }
