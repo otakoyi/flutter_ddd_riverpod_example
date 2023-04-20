@@ -9,3 +9,5 @@ This is an example how to implement clean architecture with domain driven design
 3. Flutter flavours included. Update your run configuration with --flavor development --target lib/main_development.dart
 
  Tested this example on the web and mobile. 
+
+The detailed article with explanations can be found here https://otakoyi.software/blog/flutter-clean-architecture-with-riverpod-and-supabase
