@@ -1,9 +1,10 @@
 import 'package:example/config/app_layout.dart';
 import 'package:example/features/common/presentation/widgets/app_error.dart';
+import 'package:example/features/departments/application/departments_delete_controller.dart';
+import 'package:example/features/departments/application/departments_list_controller.dart';
 import 'package:example/features/departments/presentation/screens/departments_create_screen.dart';
 import 'package:example/features/departments/presentation/screens/departments_edit_screen.dart';
 import 'package:example/features/departments/presentation/screens/departments_view_screen.dart';
-import 'package:example/features/departments/providers.dart';
 import 'package:example/features/organization/domain/entities/organization_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +14,8 @@ import 'package:go_router/go_router.dart';
 class DepartmentsList extends ConsumerWidget {
   /// Departments list constructor
   const DepartmentsList({
-    super.key,
     required this.organization,
+    super.key,
   });
 
   ///
@@ -34,7 +35,7 @@ class DepartmentsList extends ConsumerWidget {
           child: const Text('Create'),
           onPressed: () => context.goNamed(
             DepartmentsCreateScreen.routeName,
-            params: {'oid': organization.id!},
+            pathParameters: {'oid': organization.id!},
           ),
         ),
         departments.when(
@@ -55,9 +56,9 @@ class DepartmentsList extends ConsumerWidget {
                           child: Text(items[index].id!),
                           onTap: () => context.goNamed(
                             DepartmentsViewScreen.routeName,
-                            params: {
+                            pathParameters: {
                               'did': items[index].id!,
-                              'oid': organization.id!
+                              'oid': organization.id!,
                             },
                           ),
                         ),
@@ -68,9 +69,9 @@ class DepartmentsList extends ConsumerWidget {
                         IconButton(
                           onPressed: () => context.goNamed(
                             DepartmentsEditScreen.routeName,
-                            params: {
+                            pathParameters: {
                               'did': items[index].id!,
-                              'oid': organization.id!
+                              'oid': organization.id!,
                             },
                           ),
                           icon: const Icon(
@@ -100,8 +101,7 @@ class DepartmentsList extends ConsumerWidget {
                                             .handle();
                                         ref
                                             .read(
-                                              departmentsListControllerProvider
-                                                  .notifier,
+                                              departmentsListControllerProvider.notifier,
                                             )
                                             .deleteDepartment(items[index]);
                                         // Close the dialog
@@ -115,7 +115,7 @@ class DepartmentsList extends ConsumerWidget {
                                         Navigator.of(context).pop();
                                       },
                                       child: const Text('No'),
-                                    )
+                                    ),
                                   ],
                                 );
                               },
@@ -124,7 +124,7 @@ class DepartmentsList extends ConsumerWidget {
                           icon: const Icon(
                             Icons.delete,
                           ),
-                        )
+                        ),
                       ],
                     ),
                     separatorBuilder: (context, index) => const SizedBox(

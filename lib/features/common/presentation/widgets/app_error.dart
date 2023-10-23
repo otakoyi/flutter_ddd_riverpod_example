@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class AppError extends StatelessWidget {
   ///
   const AppError({
-    super.key,
     required this.title,
+    super.key,
     this.description,
   });
 
@@ -23,7 +23,7 @@ class AppError extends StatelessWidget {
         const SizedBox(
           height: 30,
         ),
-        if (description != null) Text(description!)
+        if (description != null) Text(description!),
       ],
     );
   }

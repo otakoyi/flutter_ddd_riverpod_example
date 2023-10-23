@@ -1,8 +1,9 @@
 import 'package:example/config/app_layout.dart';
 import 'package:example/features/common/presentation/utils/extensions/ui_extension.dart';
+import 'package:example/features/departments/application/departments_create_controller.dart';
+import 'package:example/features/departments/application/departments_list_controller.dart';
 import 'package:example/features/departments/domain/entities/department_entity.dart';
 import 'package:example/features/departments/domain/values/department_name.dart';
-import 'package:example/features/departments/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,8 +14,7 @@ class DepartmentCreateForm extends ConsumerStatefulWidget {
   const DepartmentCreateForm({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _DepartmentCreateFormState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _DepartmentCreateFormState();
 }
 
 class _DepartmentCreateFormState extends ConsumerState<DepartmentCreateForm> {
@@ -23,14 +23,12 @@ class _DepartmentCreateFormState extends ConsumerState<DepartmentCreateForm> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<DepartmentEntity?>>(
-        departmentsCreateControllerProvider, (previous, next) {
+    ref.listen<AsyncValue<DepartmentEntity?>>(departmentsCreateControllerProvider,
+        (previous, next) {
       next.maybeWhen(
         data: (data) {
           if (data == null) return;
-          ref
-              .read(departmentsListControllerProvider.notifier)
-              .addDepartment(data);
+          ref.read(departmentsListControllerProvider.notifier).addDepartment(data);
           context.pop();
         },
         orElse: () {},
@@ -79,9 +77,7 @@ class _DepartmentCreateFormState extends ConsumerState<DepartmentCreateForm> {
 
                       if (_name == null) return;
 
-                      ref
-                          .read(departmentsCreateControllerProvider.notifier)
-                          .handle(_name!);
+                      ref.read(departmentsCreateControllerProvider.notifier).handle(_name!);
                     },
               child: isLoading
                   ? const CircularProgressIndicator()

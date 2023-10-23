@@ -25,67 +25,71 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
   Future<Either<Failure, DepartmentEntity>> createDepartment(
     DepartmentName name,
   ) async {
-    final now = DateTimeX.current.toIso8601String();
-    final n = name.value.getOrElse((_) => '');
-    final entity = DepartmentEntity(
-      name: n,
-      createdAt: now,
-      organizationId: organization.id!,
-    );
-    final res = await client
-        .from(_table)
-        .insert(
-          entity.toJson(),
-        )
-        .withConverter(DepartmentEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
+    try {
+      final now = DateTimeX.current.toIso8601String();
+      final n = name.value.getOrElse((_) => '');
+      final entity = DepartmentEntity(
+        name: n,
+        createdAt: now,
+        organizationId: organization.id!,
+      );
+      final res = await client
+          .from(_table)
+          .insert(
+            entity.toJson(),
+          )
+          .withConverter(DepartmentEntityConverter.toSingle);
+
+      return right(res);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(res.data!);
   }
 
   @override
   Future<Either<Failure, bool>> deleteDepartment(String id) async {
-    final res = await client
-        .from(_table)
-        .delete()
-        .eq('$_table.organization_id', organization.id)
-        .eq('$_table.id', id)
-        .execute();
-    if (res.hasError) {
+    try {
+      await client
+          .from(_table)
+          .delete()
+          .eq('$_table.organization_id', organization.id)
+          .eq('$_table.id', id);
+
+      return right(true);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(true);
   }
 
   @override
   Future<Either<Failure, DepartmentEntity>> getDepartmentById(String id) async {
-    final res = await client
-        .from(_table)
-        .select()
-        .eq('organization_id', organization.id)
-        .eq('id', id)
-        .withConverter(DepartmentEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
+    try {
+      final res = await client
+          .from(_table)
+          .select<supabase.PostgrestList>()
+          .eq('organization_id', organization.id)
+          .eq('id', id)
+          .withConverter(DepartmentEntityConverter.toSingle);
+
+      return right(res);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(res.data!);
   }
 
   @override
   Future<Either<Failure, List<DepartmentEntity>>> getDepartments() async {
-    final res = await client
-        .from(_table)
-        .select()
-        .eq('organization_id', organization.id)
-        .withConverter(DepartmentEntityConverter.toList)
-        .execute();
-    if (res.hasError) {
+    try {
+      final res = await client
+          .from(_table)
+          .select<supabase.PostgrestList>()
+          .eq('organization_id', organization.id)
+          .withConverter(DepartmentEntityConverter.toList);
+
+      return right(res);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(res.data!);
   }
 
   @override
@@ -93,23 +97,24 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
     String id,
     DepartmentName name,
   ) async {
-    final now = DateTimeX.current.toIso8601String();
-    final n = name.value.getOrElse((_) => '');
-    final entity = DepartmentEntity(
-      name: n,
-      updatedAt: now,
-      organizationId: organization.id!,
-    );
-    final res = await client
-        .from(_table)
-        .update(entity.toJson())
-        .eq('organization_id', organization.id)
-        .eq('id', id)
-        .withConverter(DepartmentEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
+    try {
+      final now = DateTimeX.current.toIso8601String();
+      final n = name.value.getOrElse((_) => '');
+      final entity = DepartmentEntity(
+        name: n,
+        updatedAt: now,
+        organizationId: organization.id!,
+      );
+      final res = await client
+          .from(_table)
+          .update(entity.toJson())
+          .eq('organization_id', organization.id)
+          .eq('id', id)
+          .withConverter(DepartmentEntityConverter.toSingle);
+
+      return right(res);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(res.data!);
   }
 }

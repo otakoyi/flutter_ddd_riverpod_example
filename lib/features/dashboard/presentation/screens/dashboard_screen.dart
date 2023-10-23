@@ -1,6 +1,6 @@
-import 'package:example/features/auth/auth_provider.dart';
+import 'package:example/features/auth/application/auth_controller.dart';
 import 'package:example/features/departments/presentation/widgets/departments_list.dart';
-import 'package:example/features/organization/providers.dart';
+import 'package:example/features/organization/application/organization_view_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DashboardScreen extends ConsumerWidget {
   /// Default constructor for [DashboardScreen] widget
   const DashboardScreen({
-    super.key,
     required this.title,
     required this.organizationId,
+    super.key,
   });
 
   /// Application title displayed in the app bar
@@ -27,7 +27,7 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final organization = ref.watch(organizationViewProvider(organizationId));
+    final organization = ref.watch(organizationViewControllerProvider(organizationId));
 
     return Scaffold(
       appBar: AppBar(
@@ -47,8 +47,7 @@ class DashboardScreen extends ConsumerWidget {
               Center(
                 child: TextButton(
                   child: const Text('Logout'),
-                  onPressed: () =>
-                      ref.read(authControllerProvider.notifier).signOut(),
+                  onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
                 ),
               ),
             ],

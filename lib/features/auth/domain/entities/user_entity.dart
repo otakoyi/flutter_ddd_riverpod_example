@@ -23,6 +23,5 @@ class UserEntity with _$UserEntity {
   }) = _UserEntity;
 
   /// factory method to create entity from JSON
-  factory UserEntity.fromJson(Map<String, dynamic> json) =>
-      _$UserEntityFromJson(json);
+  factory UserEntity.fromJson(Map<String, dynamic> json) => _$UserEntityFromJson(json);
 }

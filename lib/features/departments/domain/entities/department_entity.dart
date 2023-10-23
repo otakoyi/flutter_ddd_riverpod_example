@@ -13,14 +13,13 @@ class DepartmentEntity with _$DepartmentEntity {
   /// [organizationId] - [DepartmentEntity] organization id
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory DepartmentEntity({
+    required String organizationId,
     @JsonKey(includeIfNull: false) String? id,
     @Default('') String name,
     @JsonKey(includeIfNull: false) String? createdAt,
     @JsonKey(includeIfNull: false) String? updatedAt,
-    required String organizationId,
   }) = _DepartmentEntity;
 
   /// Serialization
-  factory DepartmentEntity.fromJson(Map<String, dynamic> json) =>
-      _$DepartmentEntityFromJson(json);
+  factory DepartmentEntity.fromJson(Map<String, dynamic> json) => _$DepartmentEntityFromJson(json);
 }

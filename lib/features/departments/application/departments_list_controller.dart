@@ -1,27 +1,21 @@
 import 'package:example/features/departments/domain/entities/department_entity.dart';
-import 'package:example/features/departments/domain/repositories/department_repository_interface.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:example/features/departments/providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'departments_list_controller.g.dart';
 
 ///
-class DepartmentsListController
-    extends StateNotifier<AsyncValue<List<DepartmentEntity>>> {
-  ///
-  DepartmentsListController(this._repository)
-      : super(const AsyncValue.loading()) {
-    getDepartments();
-  }
-
-  final DepartmentRepositoryInterface _repository;
-
-  ///
-  Future<void> getDepartments() async {
-    final res = await _repository.getDepartments();
-    state = res.fold((l) => AsyncValue.error(l.toString()), AsyncValue.data);
+@riverpod
+class DepartmentsListController extends _$DepartmentsListController {
+  @override
+  FutureOr<List<DepartmentEntity>> build() async {
+    final res = await ref.watch(departmentsRepositoryProvider).getDepartments();
+    return res.fold((l) => throw l, (r) => r);
   }
 
   /// Add an entity to list
   void addDepartment(DepartmentEntity entity) {
-    final items = state.value ?? [];
+    final items = state.valueOrNull ?? [];
 
     state = const AsyncValue.loading();
 
@@ -31,7 +25,7 @@ class DepartmentsListController
 
   ///
   void updateDepartment(DepartmentEntity entity) {
-    final items = state.value ?? [];
+    final items = state.valueOrNull ?? [];
 
     state = const AsyncValue.loading();
 
@@ -46,7 +40,7 @@ class DepartmentsListController
 
   ///
   void deleteDepartment(DepartmentEntity entity) {
-    final items = state.value!;
+    final items = state.valueOrNull ?? [];
 
     state = const AsyncValue.loading();
 

@@ -10,9 +10,9 @@ import 'package:go_router/go_router.dart';
 class OrganizationCard extends StatelessWidget {
   /// Default constructor for [OrganizationCard]
   const OrganizationCard({
-    super.key,
     required this.organization,
     required this.selected,
+    super.key,
   });
 
   /// The organization that the card represents
