@@ -1,8 +1,8 @@
 import 'package:example/config/app_layout.dart';
 import 'package:example/features/common/presentation/utils/extensions/ui_extension.dart';
 import 'package:example/features/common/presentation/widgets/app_error.dart';
+import 'package:example/features/organization/application/organizations_list_controller.dart';
 import 'package:example/features/organization/presentation/widgets/organizations_list.dart';
-import 'package:example/features/organization/providers.dart';
 import 'package:example/flavors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +19,7 @@ class OrganizationsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final organizations = ref.watch(organizationListProvider);
+    final organizations = ref.watch(organizationListControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: organizations.when(

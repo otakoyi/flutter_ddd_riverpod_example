@@ -46,7 +46,7 @@ final router = GoRouter(
           name: DashboardScreen.routeName,
           builder: (context, state) => DashboardScreen(
             title: F.title,
-            organizationId: state.params['oid']!,
+            organizationId: state.pathParameters['oid']!,
           ),
           routes: [
             GoRoute(
@@ -58,14 +58,14 @@ final router = GoRouter(
               path: DepartmentsViewScreen.routePath,
               name: DepartmentsViewScreen.routeName,
               builder: (context, state) => DepartmentsViewScreen(
-                id: state.params['did']!,
+                id: state.pathParameters['did']!,
               ),
             ),
             GoRoute(
               path: DepartmentsEditScreen.routePath,
               name: DepartmentsEditScreen.routeName,
               builder: (context, state) => DepartmentsEditScreen(
-                id: state.params['did']!,
+                id: state.pathParameters['did']!,
               ),
             ),
           ],
@@ -87,9 +87,9 @@ final router = GoRouter(
   observers: [
     routeObserver,
   ],
-  redirect: (state) {
+  redirect: (context, state) {
     final loggedIn = authStateListenable.value;
-    final goingToLogin = state.subloc.contains('/${AuthScreen.route}');
+    final goingToLogin = state.matchedLocation.contains('/${AuthScreen.route}');
 
     if (!loggedIn && !goingToLogin) {
       return '/${AuthScreen.route}';
@@ -100,10 +100,8 @@ final router = GoRouter(
   },
   refreshListenable: authStateListenable,
   debugLogDiagnostics: true,
-  errorBuilder: (context, state) =>
-      ErrorScreen(message: context.tr.somethingWentWrong),
+  errorBuilder: (context, state) => ErrorScreen(message: context.tr.somethingWentWrong),
 );
 
 /// Route observer to use with RouteAware
-final RouteObserver<ModalRoute<void>> routeObserver =
-    RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();

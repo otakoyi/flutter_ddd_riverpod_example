@@ -1,18 +1,19 @@
-import 'package:example/features/departments/domain/repositories/department_repository_interface.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:example/features/departments/providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'departments_delete_controller.g.dart';
 
 ///
-class DepartmentsDeleteController extends StateNotifier<AsyncValue<bool>> {
+@riverpod
+class DepartmentsDeleteController extends _$DepartmentsDeleteController {
+  @override
+  FutureOr<bool> build(String id) {
+    return false;
+  }
+
   ///
-  DepartmentsDeleteController(this._repository, this._id)
-      : super(const AsyncValue.loading());
-
-  final DepartmentRepositoryInterface _repository;
-  final String _id;
-
-  /// Get department by id
   Future<void> handle() async {
-    final res = await _repository.deleteDepartment(_id);
-    state = res.fold((l) => AsyncValue.error(l.toString()), AsyncValue.data);
+    final res = await ref.read(departmentsRepositoryProvider).deleteDepartment(id);
+    state = res.fold((l) => AsyncValue.error(l.toString(), StackTrace.current), AsyncValue.data);
   }
 }

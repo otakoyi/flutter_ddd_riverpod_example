@@ -15,11 +15,11 @@ class OrganizationEntity with _$OrganizationEntity {
   /// [updatedAt] - [OrganizationEntity] update timestamp
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OrganizationEntity({
+    required String ownerId,
     @JsonKey(includeIfNull: false) String? id,
     @Default('') String name,
     @JsonKey(includeIfNull: false) String? description,
     @JsonKey(includeIfNull: false) String? createdAt,
-    required String ownerId,
     Map<String, dynamic>? settings,
     @JsonKey(includeIfNull: false) String? updatedAt,
   }) = _OrganizationEntity;

@@ -1,30 +1,24 @@
 import 'package:example/features/departments/domain/entities/department_entity.dart';
-import 'package:example/features/departments/domain/repositories/department_repository_interface.dart';
 import 'package:example/features/departments/domain/values/department_name.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:example/features/departments/providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'departments_edit_controller.g.dart';
 
 ///
-class DepartmentsEditController
-    extends StateNotifier<AsyncValue<DepartmentEntity>> {
-  ///
-  DepartmentsEditController(this._repository, this._id)
-      : super(const AsyncValue.loading()) {
-    _get();
-  }
+@riverpod
+class DepartmentsEditController extends _$DepartmentsEditController {
+  @override
+  FutureOr<DepartmentEntity> build(String id) async {
+    final res = await ref.watch(departmentsRepositoryProvider).getDepartmentById(id);
 
-  final DepartmentRepositoryInterface _repository;
-  final String _id;
-
-  /// Get department by id
-  Future<void> _get() async {
-    final res = await _repository.getDepartmentById(_id);
-    state = res.fold((l) => AsyncValue.error(l.toString()), AsyncValue.data);
+    return res.fold((l) => throw l, (r) => r);
   }
 
   /// save updated department
   Future<void> handle(DepartmentName name) async {
     state = const AsyncValue.loading();
-    final res = await _repository.updateDepartment(_id, name);
-    state = res.fold((l) => AsyncValue.error(l.error), AsyncValue.data);
+    final res = await ref.read(departmentsRepositoryProvider).updateDepartment(id, name);
+    state = res.fold((l) => AsyncValue.error(l.error, StackTrace.current), AsyncValue.data);
   }
 }

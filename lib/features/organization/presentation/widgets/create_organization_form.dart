@@ -2,9 +2,10 @@ import 'package:example/config/app_layout.dart';
 import 'package:example/features/common/presentation/utils/extensions/ui_extension.dart';
 import 'package:example/features/common/presentation/utils/validators.dart';
 import 'package:example/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:example/features/organization/application/organization_create_controller.dart';
+import 'package:example/features/organization/application/organizations_list_controller.dart';
 import 'package:example/features/organization/domain/entities/organization_entity.dart';
 import 'package:example/features/organization/domain/values/organization_name.dart';
-import 'package:example/features/organization/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,8 +16,7 @@ class CreateOrganizationForm extends ConsumerStatefulWidget {
   const CreateOrganizationForm({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreateOrganizationFormState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CreateOrganizationFormState();
 }
 
 class _CreateOrganizationFormState extends ConsumerState<CreateOrganizationForm>
@@ -33,12 +33,12 @@ class _CreateOrganizationFormState extends ConsumerState<CreateOrganizationForm>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<OrganizationEntity?>>(organizationCreateProvider,
+    ref.listen<AsyncValue<OrganizationEntity?>>(organizationCreateControllerProvider,
         (previous, next) {
       next.maybeWhen(
         data: (data) {
           if (data != null) {
-            ref.read(organizationListProvider.notifier).addOrganization(data);
+            ref.read(organizationListControllerProvider.notifier).addOrganization(data);
             context
               ..pop()
               ..push(
@@ -50,7 +50,7 @@ class _CreateOrganizationFormState extends ConsumerState<CreateOrganizationForm>
       );
     });
 
-    final createResult = ref.watch(organizationCreateProvider);
+    final createResult = ref.watch(organizationCreateControllerProvider);
     final errorText = createResult.maybeWhen(
       error: (error, stackTrace) => error.toString(),
       orElse: () => null,
@@ -114,22 +114,18 @@ class _CreateOrganizationFormState extends ConsumerState<CreateOrganizationForm>
                       onPressed: isLoading
                           ? null
                           : () {
-                              if (!(formKey.currentState?.validate() ??
-                                  false)) {
+                              if (!(formKey.currentState?.validate() ?? false)) {
                                 return;
                               }
-                              ref
-                                  .read(organizationCreateProvider.notifier)
-                                  .create(
+                              ref.read(organizationCreateControllerProvider.notifier).create(
                                     OrganizationName(
                                       nameController.text.trim(),
                                     ),
                                     descriptionController.text.trim(),
                                   );
                             },
-                      child: isLoading
-                          ? const CircularProgressIndicator()
-                          : Text(context.tr.create),
+                      child:
+                          isLoading ? const CircularProgressIndicator() : Text(context.tr.create),
                     ),
                   ],
                 ),

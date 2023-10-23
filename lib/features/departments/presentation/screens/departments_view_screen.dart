@@ -1,5 +1,5 @@
 import 'package:example/features/common/presentation/widgets/app_error.dart';
-import 'package:example/features/departments/providers.dart';
+import 'package:example/features/departments/application/departments_view_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DepartmentsViewScreen extends ConsumerWidget {
   /// Departments list constructor
   const DepartmentsViewScreen({
-    super.key,
     required this.id,
+    super.key,
   });
 
   /// Department id

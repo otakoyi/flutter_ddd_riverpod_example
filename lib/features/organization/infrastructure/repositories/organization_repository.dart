@@ -6,7 +6,7 @@ import 'package:example/features/organization/domain/repositories/organization_r
 import 'package:example/features/organization/domain/values/organization_name.dart';
 import 'package:example/features/organization/infrastructure/repositories/organization_entity_converter.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 ///
 class OrganizationRepository implements OrganizationRepositoryInterface {
@@ -14,7 +14,7 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   OrganizationRepository({required this.client, required this.user});
 
   /// Exposes Supabase auth client to allow Auth Controller to subscribe to auth changes
-  final supabase.SupabaseClient client;
+  final SupabaseClient client;
 
   /// Authorized User entity
   final UserEntity user;
@@ -25,16 +25,17 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   ///
   @override
   Future<Either<Failure, List<OrganizationEntity>>> getOrganizations() async {
-    final res = await client
-        .from(_tableOrganization)
-        .select('*,$_tableOrganizationUser!inner(*)')
-        .eq('$_tableOrganizationUser.user_id', user.id)
-        .withConverter(OrganizationEntityConverter.toList)
-        .execute();
-    if (res.hasError) {
+    try {
+      final res = await client
+          .from(_tableOrganization)
+          .select<PostgrestList>('*,$_tableOrganizationUser!inner(*)')
+          .eq('$_tableOrganizationUser.user_id', user.id)
+          .withConverter(OrganizationEntityConverter.toList);
+
+      return right(res);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(res.data!);
   }
 
   ///
@@ -42,16 +43,17 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   Future<Either<Failure, OrganizationEntity>> getOrganizationById(
     String id,
   ) async {
-    final res = await client
-        .from(_tableOrganization)
-        .select('*,$_tableOrganizationUser!inner(*)')
-        .eq('$_tableOrganizationUser.user_id', user.id)
-        .withConverter(OrganizationEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
+    try {
+      final res = await client
+          .from(_tableOrganization)
+          .select<PostgrestList>('*,$_tableOrganizationUser!inner(*)')
+          .eq('$_tableOrganizationUser.user_id', user.id)
+          .withConverter(OrganizationEntityConverter.toSingle);
+
+      return right(res);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(res.data!);
   }
 
   ///
@@ -59,32 +61,29 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   Future<Either<Failure, OrganizationEntity>> createOrganization(
     OrganizationName organizationName,
   ) async {
-    final now = DateTimeX.current.toIso8601String();
-    final name = organizationName.value.getOrElse((f) => '');
-    final entity = OrganizationEntity(
-      ownerId: user.id,
-      name: name,
-      createdAt: now,
-      updatedAt: now,
-    );
-    final res = await client
-        .from(_tableOrganization)
-        .insert(
-          entity.toJson(),
-        )
-        .withConverter(OrganizationEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
+    try {
+      final now = DateTimeX.current.toIso8601String();
+      final name = organizationName.value.getOrElse((f) => '');
+      final entity = OrganizationEntity(
+        ownerId: user.id,
+        name: name,
+        createdAt: now,
+        updatedAt: now,
+      );
+      final organization = await client
+          .from(_tableOrganization)
+          .insert(
+            entity.toJson(),
+          )
+          .withConverter(OrganizationEntityConverter.toSingle);
+
+      await client.from(_tableOrganizationUser).insert(
+        {'organization_id': organization.id, 'user_id': user.id},
+      );
+      return right(organization);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    final organization = res.data!;
-    final res2 = await client.from(_tableOrganizationUser).insert(
-      {'organization_id': organization.id, 'user_id': user.id},
-    ).execute();
-    if (res2.hasError) {
-      return left(const Failure.badRequest());
-    }
-    return right(organization);
   }
 
   ///
@@ -92,24 +91,25 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   Future<Either<Failure, OrganizationEntity>> updateOrganization(
     OrganizationName organizationName,
   ) async {
-    final now = DateTimeX.current.toIso8601String();
-    final name = organizationName.value.getOrElse((_) => '');
-    final entity = OrganizationEntity(
-      ownerId: user.id,
-      name: name,
-      updatedAt: now,
-    );
-    final res = await client
-        .from(_tableOrganization)
-        .update(
-          entity.toJson(),
-        )
-        .withConverter(OrganizationEntityConverter.toSingle)
-        .execute();
-    if (res.hasError) {
+    try {
+      final now = DateTimeX.current.toIso8601String();
+      final name = organizationName.value.getOrElse((_) => '');
+      final entity = OrganizationEntity(
+        ownerId: user.id,
+        name: name,
+        updatedAt: now,
+      );
+      final res = await client
+          .from(_tableOrganization)
+          .update(
+            entity.toJson(),
+          )
+          .withConverter(OrganizationEntityConverter.toSingle);
+
+      return right(res);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(res.data!);
   }
 
   /// Delete organization
@@ -117,14 +117,11 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
   Future<Either<Failure, bool>> deleteOrganization(
     OrganizationEntity organizationEntity,
   ) async {
-    final res = await client
-        .from(_tableOrganization)
-        .delete()
-        .eq('id', organizationEntity.id)
-        .execute();
-    if (res.hasError) {
+    try {
+      await client.from(_tableOrganization).delete().eq('id', organizationEntity.id);
+      return right(true);
+    } catch (_) {
       return left(const Failure.badRequest());
     }
-    return right(true);
   }
 }

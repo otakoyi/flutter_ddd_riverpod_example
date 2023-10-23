@@ -1,8 +1,8 @@
 import 'package:example/config/app_layout.dart';
 import 'package:example/features/common/presentation/utils/extensions/ui_extension.dart';
+import 'package:example/features/departments/application/departments_edit_controller.dart';
 import 'package:example/features/departments/domain/entities/department_entity.dart';
 import 'package:example/features/departments/domain/values/department_name.dart';
-import 'package:example/features/departments/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,16 +10,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DepartmentEditForm extends ConsumerStatefulWidget {
   ///
   const DepartmentEditForm({
-    super.key,
     required this.id,
+    super.key,
   });
 
   ///
   final String id;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _DepartmentEditFormState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _DepartmentEditFormState();
 }
 
 class _DepartmentEditFormState extends ConsumerState<DepartmentEditForm> {
@@ -35,7 +34,7 @@ class _DepartmentEditFormState extends ConsumerState<DepartmentEditForm> {
 
   @override
   void initState() {
-    ref.listenOnce(departmentsEditControllerProvider(widget.id), (
+    ref.listenManual(departmentsEditControllerProvider(widget.id), (
       AsyncValue<DepartmentEntity>? prev,
       AsyncValue<DepartmentEntity> next,
     ) {
@@ -91,14 +90,11 @@ class _DepartmentEditFormState extends ConsumerState<DepartmentEditForm> {
                       }
                       ref
                           .read(
-                            departmentsEditControllerProvider(widget.id)
-                                .notifier,
+                            departmentsEditControllerProvider(widget.id).notifier,
                           )
                           .handle(_name!);
                     },
-              child: isLoading
-                  ? const Text('Loading ...')
-                  : Text(context.tr.departmentUpdateBtn),
+              child: isLoading ? const Text('Loading ...') : Text(context.tr.departmentUpdateBtn),
             ),
           ],
         ),

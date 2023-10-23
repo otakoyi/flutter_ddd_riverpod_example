@@ -1,5 +1,5 @@
+import 'package:example/features/departments/application/departments_edit_controller.dart';
 import 'package:example/features/departments/presentation/widgets/department_edit_form.dart';
-import 'package:example/features/departments/providers.dart';
 import 'package:example/features/organization/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DepartmentsEditScreen extends ConsumerWidget {
   /// Departments list constructor
   const DepartmentsEditScreen({
-    super.key,
     required this.id,
+    super.key,
   });
 
   /// Department id
