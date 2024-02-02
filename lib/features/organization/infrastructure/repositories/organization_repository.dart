@@ -28,7 +28,7 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
     try {
       final res = await client
           .from(_tableOrganization)
-          .select<PostgrestList>('*,$_tableOrganizationUser!inner(*)')
+          .select('*,$_tableOrganizationUser!inner(*)')
           .eq('$_tableOrganizationUser.user_id', user.id)
           .withConverter(OrganizationEntityConverter.toList);
 
@@ -46,7 +46,7 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
     try {
       final res = await client
           .from(_tableOrganization)
-          .select<PostgrestList>('*,$_tableOrganizationUser!inner(*)')
+          .select('*,$_tableOrganizationUser!inner(*)')
           .eq('$_tableOrganizationUser.user_id', user.id)
           .withConverter(OrganizationEntityConverter.toSingle);
 
@@ -118,7 +118,7 @@ class OrganizationRepository implements OrganizationRepositoryInterface {
     OrganizationEntity organizationEntity,
   ) async {
     try {
-      await client.from(_tableOrganization).delete().eq('id', organizationEntity.id);
+      await client.from(_tableOrganization).delete().eq('id', organizationEntity.id ?? '');
       return right(true);
     } catch (_) {
       return left(const Failure.badRequest());

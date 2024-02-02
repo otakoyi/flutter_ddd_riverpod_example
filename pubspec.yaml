@@ -39,12 +39,12 @@ dependencies:
   flutter_riverpod: ^2.0.0-dev.9
   fpdart: ^1.1.0
   freezed_annotation: ^2.4.1
-  go_router: ^12.0.0
+  go_router: ^13.1.0
   intl: ^0.18.1
   json_annotation: ^4.8.1
   riverpod_annotation: ^2.2.1
   shared_preferences: ^2.0.15
-  supabase_flutter: ^1.10.22
+  supabase_flutter: ^2.3.2
   uni_links: ^0.5.1
   validators: ^3.0.0
 
@@ -72,8 +72,6 @@ flutter:
 
   assets:
     - local.config.json
-    - development.config.json
-    - production.config.json
 
 flavorizr:
   app:

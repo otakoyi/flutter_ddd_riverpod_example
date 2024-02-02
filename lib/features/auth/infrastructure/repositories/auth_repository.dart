@@ -31,6 +31,7 @@ class AuthRepository implements AuthRepositoryInterface {
       switch (data.event) {
         case supabase.AuthChangeEvent.signedIn:
         case supabase.AuthChangeEvent.userUpdated:
+        case supabase.AuthChangeEvent.initialSession when data.session?.user != null:
         case supabase.AuthChangeEvent.mfaChallengeVerified:
           callback(
             UserEntity.fromJson(data.session!.user.toJson()),
@@ -43,6 +44,7 @@ class AuthRepository implements AuthRepositoryInterface {
           break;
         case supabase.AuthChangeEvent.passwordRecovery:
         case supabase.AuthChangeEvent.tokenRefreshed:
+        default:
           break;
       }
     });
@@ -53,7 +55,7 @@ class AuthRepository implements AuthRepositoryInterface {
   Future<Either<Failure, UserEntity>> setSession(String token) async {
     try {
       final response = await authClient.setSession(token);
-      await authTokenLocalDataSource.store(response.session?.persistSessionString ?? '');
+      await authTokenLocalDataSource.store(response.session?.providerToken ?? '');
 
       final user = response.user;
 
@@ -85,7 +87,7 @@ class AuthRepository implements AuthRepositoryInterface {
         return left(const Failure.unauthorized());
       }
 
-      await authTokenLocalDataSource.store(response.session?.persistSessionString ?? '');
+      await authTokenLocalDataSource.store(response.session?.providerToken ?? '');
 
       return right(UserEntity.fromJson(user.toJson()));
     } catch (_) {
@@ -98,7 +100,7 @@ class AuthRepository implements AuthRepositoryInterface {
   Future<Either<Failure, bool>> signInWithGoogle() async {
     log('here2');
     final res = await authClient.signInWithOAuth(
-      supabase.Provider.google,
+      supabase.OAuthProvider.google,
     );
     if (!res) {
       return left(const Failure.badRequest());

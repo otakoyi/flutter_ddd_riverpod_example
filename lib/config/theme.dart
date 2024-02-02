@@ -12,7 +12,6 @@ class AppTheme {
   ThemeData get themeData {
     return ThemeData(brightness: _brightness).copyWith(
       colorScheme: _colorScheme,
-      useMaterial3: true,
     );
   }
 

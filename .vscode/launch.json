@@ -9,6 +9,8 @@
       "args": [
         "--flavor",
         "local",
+        "-d",
+        "web-server",
         "--web-port",
         "8686",
       ],

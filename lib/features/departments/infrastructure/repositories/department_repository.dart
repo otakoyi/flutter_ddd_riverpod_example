@@ -52,7 +52,7 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
       await client
           .from(_table)
           .delete()
-          .eq('$_table.organization_id', organization.id)
+          .eq('$_table.organization_id', organization.id ?? '')
           .eq('$_table.id', id);
 
       return right(true);
@@ -66,8 +66,8 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
     try {
       final res = await client
           .from(_table)
-          .select<supabase.PostgrestList>()
-          .eq('organization_id', organization.id)
+          .select()
+          .eq('organization_id', organization.id ?? '')
           .eq('id', id)
           .withConverter(DepartmentEntityConverter.toSingle);
 
@@ -82,8 +82,8 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
     try {
       final res = await client
           .from(_table)
-          .select<supabase.PostgrestList>()
-          .eq('organization_id', organization.id)
+          .select()
+          .eq('organization_id', organization.id ?? '')
           .withConverter(DepartmentEntityConverter.toList);
 
       return right(res);
@@ -108,7 +108,7 @@ class DepartmentRepository implements DepartmentRepositoryInterface {
       final res = await client
           .from(_table)
           .update(entity.toJson())
-          .eq('organization_id', organization.id)
+          .eq('organization_id', organization.id ?? '')
           .eq('id', id)
           .withConverter(DepartmentEntityConverter.toSingle);
 
