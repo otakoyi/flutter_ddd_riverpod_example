@@ -11,7 +11,7 @@ part 'providers.g.dart';
 ///
 
 /// Exposes [SharedPreferences] instance
-@riverpod
+@Riverpod(keepAlive: true)
 FutureOr<SharedPreferences> sharedPreferences(SharedPreferencesRef ref) {
   return SharedPreferences.getInstance();
 }

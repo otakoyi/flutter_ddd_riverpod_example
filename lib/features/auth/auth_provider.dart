@@ -12,7 +12,10 @@ part 'auth_provider.g.dart';
 @riverpod
 AuthRepository authRepository(AuthRepositoryRef ref) {
   final authClient = ref.watch(supabaseClientProvider).auth;
-  final prefs = ref.read(sharedPreferencesProvider).asData!.value;
+  final prefs = ref.read(sharedPreferencesProvider).valueOrNull;
+  if (prefs == null) {
+    throw 'Shared preferences not initialized';
+  }
   return AuthRepository(
     AuthTokenLocalDataSource(
       prefs,
